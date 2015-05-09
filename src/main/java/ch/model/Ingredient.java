@@ -19,8 +19,8 @@ public class Ingredient implements Food {
 		this.carbons = carbons;
 	}
 
-	public Ingredient(String id, String name) {
-		this(id, name, 0.0, 0.0, 0.0, 0.0);
+	public Ingredient(String id) {
+		this(id, "", 0.0, 0.0, 0.0, 0.0);
 	}
 
 	public double getCarbons() {
@@ -97,14 +97,14 @@ public class Ingredient implements Food {
 
 	@Override
 	public int hashCode() {
-		return 31 * this.id.hashCode();
+		return id.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Ingredient) {
 			Ingredient ig = (Ingredient) obj;
-			return this.id.equals(ig.id);
+			return id.equals(ig.id);
 		}
 		return false;
 	}
