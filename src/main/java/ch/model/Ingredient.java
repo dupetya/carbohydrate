@@ -41,28 +41,28 @@ public class Ingredient implements Food {
 
 	public double getCarbons(double weight) {
 		if (weight < 0.0)
-			throw new IllegalArgumentException(
+			throw new FoodException(
 					"Weight can't be negative value!");
 		return carbons / 100 * weight;
 	}
 
 	public double getFat(double weight) {
 		if (weight < 0.0)
-			throw new IllegalArgumentException(
+			throw new FoodException(
 					"Weight can't be negative value!");
 		return fat / 100 * weight;
 	}
 
 	public double getCalories(double weight) {
 		if (weight < 0.0)
-			throw new IllegalArgumentException(
+			throw new FoodException(
 					"Weight can't be negative value!");
 		return calories / 100 * weight;
 	}
 
 	public double getProteins(double weight) {
 		if (weight < 0.0)
-			throw new IllegalArgumentException(
+			throw new FoodException(
 					"Weight can't be negative value!");
 		return proteins / 100 * weight;
 	}
@@ -80,18 +80,30 @@ public class Ingredient implements Food {
 	}
 
 	public void setProteins(double proteins) {
+		if (proteins < 0.0)
+			throw new FoodException(
+					"Value can't be negative value!");
 		this.proteins = proteins;
 	}
 
 	public void setFat(double fat) {
+		if (fat < 0.0)
+			throw new FoodException(
+					"Value can't be negative value!");
 		this.fat = fat;
 	}
 
 	public void setCalories(double calories) {
+		if (calories < 0.0)
+			throw new FoodException(
+					"Value can't be negative value!");
 		this.calories = calories;
 	}
 
 	public void setCarbons(double carbons) {
+		if (carbons < 0.0)
+			throw new FoodException(
+					"Value can't be negative value!");
 		this.carbons = carbons;
 	}
 
