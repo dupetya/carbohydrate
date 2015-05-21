@@ -7,10 +7,9 @@ import ch.model.Ingredient;
 public interface FoodDAO {
 	List<Ingredient> getIngredients();
 	
+	
 
-	Ingredient getIngredientByID(String id);
-
-	void updateIngredient(Ingredient ig);
-
-	void insertIngredient(Ingredient ig);
+	Ingredient getIngredientByID(String id) throws FoodDaoException;
+	void updateIngredient(Ingredient ig) throws FoodDaoException;
+	void insertIngredient(Ingredient ig) throws FoodDaoException;
 }
