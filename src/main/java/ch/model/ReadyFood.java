@@ -1,6 +1,8 @@
 package ch.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ReadyFood implements Food {
@@ -10,19 +12,29 @@ public class ReadyFood implements Food {
 	private Map<Ingredient, Double> ingredients;
 	
 	public ReadyFood(String id) {
+		this.id = id;
 		ingredients = new HashMap<Ingredient, Double>();
 	}
 	
+	public ReadyFood(String id, String name) {
+		this(id);
+		this.name = name;
+	}
+
 	public String getId() {
 		return id;
 	}
 	
-	public void setIngredients(Map<Ingredient, Double> ingredients) {
-		this.ingredients = ingredients;
+	public String getName() {
+		return name;
 	}
 	
-	public Map<Ingredient, Double> getIngredients() {
-		return ingredients;
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setIngredients(Map<Ingredient, Double> ingredients) {
+		this.ingredients = ingredients;
 	}
 	
 	public double getTotalWeight() {
@@ -31,6 +43,20 @@ public class ReadyFood implements Food {
 			sum += d;
 		}
 		return sum;
+	}
+	
+	public List<Ingredient> getIngredients() {
+		List<Ingredient> l = new ArrayList<Ingredient>();
+		for (Ingredient ingredient : ingredients.keySet()) {
+			l.add(ingredient);
+		}
+		return l;
+	}
+	
+	public double getIngredientWeight(Ingredient ing) {
+		if(ingredients.get(ing) == null)
+			throw new FoodException("No such ingredient");
+		else return ingredients.get(ing);
 	}
 	
 	public boolean addIngredient(Ingredient ing, double weight) {

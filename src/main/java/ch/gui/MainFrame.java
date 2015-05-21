@@ -4,6 +4,12 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import ch.dao.FoodDAO;
+import ch.dao.FoodDaoException;
+import ch.dao.FoodXmlDAO;
+import ch.model.Ingredient;
+import ch.model.ReadyFood;
+
 public class MainFrame {
 
 	private JFrame frame;
@@ -12,7 +18,7 @@ public class MainFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		/*EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainFrame window = new MainFrame();
@@ -21,7 +27,21 @@ public class MainFrame {
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
+		
+		Ingredient ig = new Ingredient("asd", "Körte", 1.0, 2.0, 14, 3.0);
+		ReadyFood rf = new ReadyFood("asd", "Almalé");
+		
+		rf.addIngredient(ig, 47.0);
+		
+		try {
+			FoodDAO dao = new FoodXmlDAO();
+			dao.insertReadyFood(rf);
+			
+		} catch (FoodDaoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
