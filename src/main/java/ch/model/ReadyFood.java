@@ -25,6 +25,14 @@ public class ReadyFood implements Food {
 		return ingredients;
 	}
 	
+	public double getTotalWeight() {
+		double sum =0.0;
+		for (double d : ingredients.values()) {
+			sum += d;
+		}
+		return sum;
+	}
+	
 	public boolean addIngredient(Ingredient ing, double weight) {
 		if(ingredients.get(ing) == null) {
 			ingredients.put(ing, weight);
@@ -62,7 +70,11 @@ public class ReadyFood implements Food {
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getCarbons((ingredients.get(ing)));
 		}
-		return (sum / 100.0) * weight;
+		
+		double w = getTotalWeight();
+		if(w != 0)
+			return (sum / w) * weight;
+		else return 0;
 	}
 
 	@Override
@@ -73,7 +85,11 @@ public class ReadyFood implements Food {
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getFat((ingredients.get(ing)));
 		}
-		return (sum / 100.0) * weight;
+		
+		double w = getTotalWeight();
+		if(w != 0)
+			return (sum / w) * weight;
+		else return 0;
 	}
 
 	@Override
@@ -84,7 +100,11 @@ public class ReadyFood implements Food {
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getCalories((ingredients.get(ing)));
 		}
-		return (sum / 100.0) * weight;
+		
+		double w = getTotalWeight();
+		if(w != 0)
+			return (sum / w) * weight;
+		else return 0;
 	}
 
 	@Override
@@ -95,7 +115,11 @@ public class ReadyFood implements Food {
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getProteins((ingredients.get(ing)));
 		}
-		return (sum / 100.0) * weight;
+		
+		double w = getTotalWeight();
+		if(w != 0)
+			return (sum / w) * weight;
+		else return 0;
 	}
 		
 	@Override
