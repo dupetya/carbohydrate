@@ -9,18 +9,22 @@ import ch.dao.FoodDAO;
 import ch.dao.FoodXmlDAO;
 import ch.model.Ingredient;
 
-public class NewIngredientFrame extends MyFrame {
+@SuppressWarnings("serial")
+public class IngModifyFrame extends MyFrame {
 
 	private JTextField nameTF;
 	private JTextField caloriesTF;
 	private JTextField carbonHydTF;
 	private JTextField proteinTF;
 	private JTextField fatTF;
+	
+	private Ingredient transfer;
 
-	public NewIngredientFrame(JFrame parent) {
+	public IngModifyFrame(JFrame parent, Ingredient trans) {
 		super(parent);
+		transfer = trans;
 		setAlwaysOnTop(true);
-		setTitle("Új hozzávaló");
+		setTitle("Hozzávaló módosítás");
 		setBounds(100, 100, 450, 181);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
@@ -45,30 +49,30 @@ public class NewIngredientFrame extends MyFrame {
 		lblZsr.setBounds(10, 115, 107, 20);
 		getContentPane().add(lblZsr);
 
-		nameTF = new JTextField();
+		nameTF = new JTextField(transfer.getName());
 		nameTF.setBounds(138, 11, 141, 20);
 		getContentPane().add(nameTF);
 
-		caloriesTF = new NumberOnlyTextField(0.0);
+		caloriesTF = new NumberOnlyTextField(transfer.getCarbons());
 		caloriesTF.setBounds(138, 37, 141, 20);
 		getContentPane().add(caloriesTF);
 
-		carbonHydTF = new NumberOnlyTextField(new Float(0.0));
+		carbonHydTF = new NumberOnlyTextField(transfer.getCarbons());
 		carbonHydTF.setBounds(138, 63, 141, 20);
 		getContentPane().add(carbonHydTF);
 
-		proteinTF = new NumberOnlyTextField(new Float(0.0));
+		proteinTF = new NumberOnlyTextField(transfer.getProteins());
 		proteinTF.setBounds(138, 89, 141, 20);
 		getContentPane().add(proteinTF);
 
-		fatTF = new NumberOnlyTextField(new Float(0.0));
+		fatTF = new NumberOnlyTextField(transfer.getFat());
 		fatTF.setBounds(138, 115, 141, 20);
 		getContentPane().add(fatTF);
 
 		JButton btnOk = new JButton("OK");
 		btnOk.setBounds(319, 10, 89, 47);
 		btnOk.addActionListener(e -> {
-			Ingredient ig = null;
+			Ingredient ig;
 			if (nameTF.getText().trim().isEmpty())
 				return;
 			try {
@@ -77,14 +81,7 @@ public class NewIngredientFrame extends MyFrame {
 				double prot = Double.valueOf(proteinTF.getText().trim());
 				double carb = Double.valueOf(carbonHydTF.getText().trim());
 
-				StringBuilder sb = new StringBuilder("ing");
-				sb.append(nameTF.getText().charAt(0));
-				sb.append((int) (cal * 31)).append((int) (fat * 13))
-						.append('_');
-				sb.append((int) (prot * 7)).append((int) (carb * 2));
-				;
-
-				ig = new Ingredient(sb.toString(), nameTF.getText().trim(),
+				ig = new Ingredient(transfer.getId(), nameTF.getText().trim(),
 						prot, fat, cal, carb);
 			} catch (NumberFormatException ex) {
 				ig = null;
@@ -94,11 +91,9 @@ public class NewIngredientFrame extends MyFrame {
 				FoodDAO dao;
 				try {
 					dao = new FoodXmlDAO();
-					dao.insertIngredient(ig);
-					IngredientFrame iframe = new IngredientFrame(((MyFrame) parentFrame)
-							.getParentFrame());
-					parentFrame.dispose();
-					iframe.setVisible(true);
+					dao.updateIngredient(ig);
+					((IngViewFrame) parentFrame).fillPanels(dao.getIngredients());
+					this.parentFrame.setVisible(true);
 					this.dispose();
 				} catch (Exception e1) {
 					e1.printStackTrace();

@@ -5,38 +5,38 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import ch.dao.FoodDAO;
 import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
 import ch.model.Ingredient;
 
-import javax.swing.ScrollPaneConstants;
-
 @SuppressWarnings("serial")
-public class IngredientFrame extends MyFrame implements ActionListener {
+public class IngViewFrame extends MyFrame implements ActionListener {
 	private JScrollPane scrollPane;
 	private JPanel ipanelContainer;
-	private List<IngredientPanel> ipanels;
+	private List<IngPanel> ipanels;
 
-	private IngredientPanel selected;
+	private IngPanel selected;
 
 	private JButton btnNew;
 	private JButton btnModify;
 	private JButton btnDelete;
 	private JButton btnVissza;
 
-	public IngredientFrame(JFrame parent) {
+	public IngViewFrame(JFrame parent) {
 		super(parent);
 		selected = null;
 		this.setBounds(100, 100, 553, 300);
-		ipanels = new ArrayList<IngredientPanel>();
+		ipanels = new ArrayList<IngPanel>();
 		setTitle("Hozzávalók");
 		setResizable(false);
 		getContentPane().setLayout(null);
@@ -58,13 +58,21 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 		btnNew = new JButton("Új");
 		btnNew.setBounds(448, 11, 89, 40);
 		btnNew.addActionListener(e -> {
-			NewIngredientFrame nif = new NewIngredientFrame(this);
+			IngNewIngredientFrame nif = new IngNewIngredientFrame(this);
 			this.setVisible(false);
 			nif.setVisible(true);
 		});
 		getContentPane().add(btnNew);
 
 		btnModify = new JButton("Módosítás");
+		btnModify.addActionListener(e -> {
+			if (selected != null) {
+				IngModifyFrame miFrame = new IngModifyFrame(this, selected
+						.getIngredient());
+				miFrame.setVisible(true);
+				this.setVisible(false);
+			}
+		});
 		btnModify.setBounds(448, 62, 89, 40);
 		getContentPane().add(btnModify);
 
@@ -80,7 +88,7 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 					e1.printStackTrace();
 				}
 			}
-			
+
 		});
 		getContentPane().add(btnDelete);
 
@@ -104,13 +112,17 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-	
-	private void fillPanels(List<Ingredient> ingredients) {
+
+	void fillPanels(List<Ingredient> ingredients) {
 		ipanelContainer.removeAll();
 		ipanels.clear();
-		
+
+		Collections.sort(ingredients, (o1, o2) -> {
+			return o1.getName().compareTo(o2.getName());
+		});
+
 		for (Ingredient ingredient : ingredients) {
-			IngredientPanel ipan = new IngredientPanel(this, ingredient);
+			IngPanel ipan = new IngPanel(this, ingredient);
 			ipanels.add(ipan);
 			ipanelContainer.add(ipan);
 		}
@@ -124,7 +136,7 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 			selected.getRButton().setSelected(false);
 			selected = null;
 		}
-		for (IngredientPanel ingredientPanel : ipanels) {
+		for (IngPanel ingredientPanel : ipanels) {
 			if (e.getSource() == ingredientPanel.getRButton()) {
 				selected = ingredientPanel;
 				selected.getRButton().setSelected(true);

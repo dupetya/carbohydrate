@@ -9,13 +9,13 @@ import javax.swing.JRadioButton;
 
 import ch.model.Ingredient;
 
-class IngredientPanel extends JPanel {
+@SuppressWarnings("serial")
+class IngPanel extends JPanel {
 
 	private Ingredient ingredient;
 	private JRadioButton rbutton;
-	private ActionListener parent;
 
-	public IngredientPanel(ActionListener parent, Ingredient ing) {
+	public IngPanel(ActionListener parent, Ingredient ing) {
 		ingredient = ing;
 		setLayout(null);
 		setPreferredSize(new Dimension(400, 35));

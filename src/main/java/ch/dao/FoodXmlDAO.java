@@ -147,20 +147,41 @@ public class FoodXmlDAO implements FoodDAO {
 		NodeList readyFoodNodeList = doc.getElementsByTagName("ReadyFood");
 		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
 			Element rfElement = (Element) readyFoodNodeList.item(i);
+			ReadyFood rf = elementToReadyFood(rfElement);
+			if (rf != null)
+				result.add(rf);
 		}
 		return result;
 	}
 
 	@Override
-	public Ingredient getReadyFoodByID(String id) throws FoodDaoException {
-		// TODO Auto-generated method stub
+	public ReadyFood getReadyFoodByID(String id) throws FoodDaoException {
+		NodeList readyFoodNodeList = doc.getElementsByTagName("ReadyFood");
+		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
+			Element rfElement = (Element) readyFoodNodeList.item(i);
+			if (rfElement.getAttribute("id").equals(id)) {
+				return elementToReadyFood(rfElement);
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public void updateReadyFood(ReadyFood rf) throws FoodDaoException {
-		// TODO Auto-generated method stub
+		Element rfsElement = (Element) doc.getElementsByTagName("ReadyFoods")
+				.item(0);
+		NodeList readyFoodNodeList = rfsElement
+				.getElementsByTagName("ReadyFood");
 
+		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
+			Element rfElement = (Element) readyFoodNodeList.item(i);
+			if (rfElement.getAttribute("id").equals(rf.getId())) {
+				Element newElem = readyfoodToElement(rf);
+				rfsElement.removeChild(rfElement);
+				rfsElement.appendChild(newElem);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -188,6 +209,23 @@ public class FoodXmlDAO implements FoodDAO {
 		writeXML();
 
 	}
+	
+	@Override
+	public void deleteReadyFood(ReadyFood rf) throws FoodDaoException {
+		Element rfsElement = (Element) doc.getElementsByTagName("ReadyFoods")
+				.item(0);
+		NodeList rfNodeList = rfsElement.getElementsByTagName("ReadyFood");
+
+		if (rfNodeList.getLength() > 0) {
+			for (int i = 0; i < rfNodeList.getLength(); i++) {
+				Element rfElem = (Element) rfNodeList.item(i);
+				if (rfElem.getAttribute("id").equals(rf.getId())) {
+					rfsElement.removeChild(rfElem);
+				}
+			}
+		}
+
+	}
 
 	private Element readyfoodToElement(ReadyFood rf) {
 		Element rfElement = doc.createElement("ReadyFood");
@@ -199,11 +237,7 @@ public class FoodXmlDAO implements FoodDAO {
 		for (Ingredient ing : rf.getIngredients()) {
 
 			if (getIngredientByID(ing.getId()) == null)
-				try {
-					insertIngredient(ing);
-				} catch (FoodDaoException e) {
-					return null;
-				}
+				return null;
 
 			Node pairNode = mapNode.appendChild(doc.createElement("Pair"));
 
@@ -249,6 +283,31 @@ public class FoodXmlDAO implements FoodDAO {
 		} catch (NumberFormatException e) {
 			return null;
 		}
+	}
+
+	private ReadyFood elementToReadyFood(Element rfElement) {
+		ReadyFood rf = new ReadyFood(rfElement.getAttribute("id"));
+		rf.setName(rfElement.getElementsByTagName("name").item(0)
+				.getTextContent());
+
+		NodeList mapPairNodeList = rfElement.getElementsByTagName("Pair");
+		boolean isValid = true;
+		for (int j = 0; j < mapPairNodeList.getLength(); j++) {
+			Element pairElement = (Element) mapPairNodeList.item(0);
+
+			Element keyElem = (Element) pairElement.getElementsByTagName("id")
+					.item(0);
+			Element valElem = (Element) pairElement.getElementsByTagName(
+					"value").item(0);
+
+			Ingredient ing = getIngredientByID(keyElem.getTextContent());
+			if (ing == null) {
+				return null;
+			}
+
+			rf.addIngredient(ing, Double.valueOf(valElem.getTextContent()));
+		}
+		return rf;
 	}
 
 	private void writeXML() throws FoodDaoException {

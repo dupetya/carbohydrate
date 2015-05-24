@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class MainFrame extends MyFrame {
 
 	public static void main(String[] args) {
@@ -35,7 +36,7 @@ public class MainFrame extends MyFrame {
 		JButton buttonIngredients = new JButton("Hozzávalók");
 		buttonIngredients.setBounds(48, 31, 169, 49);
 		buttonIngredients.addActionListener(e-> {
-				IngredientFrame iFrame = new IngredientFrame(this);
+				IngViewFrame iFrame = new IngViewFrame(this);
 				this.setVisible(false);
 				iFrame.setVisible(true);
 			});
