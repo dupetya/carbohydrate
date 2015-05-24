@@ -1,5 +1,6 @@
 package ch.model;
 
+@SuppressWarnings("serial")
 public class FoodException extends RuntimeException {
 
 	public FoodException(String arg0, Throwable arg1) {

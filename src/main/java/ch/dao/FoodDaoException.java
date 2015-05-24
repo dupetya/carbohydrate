@@ -1,5 +1,6 @@
 package ch.dao;
 
+@SuppressWarnings("serial")
 public class FoodDaoException extends Exception {
 
 	public FoodDaoException(String message, Throwable cause) {

@@ -33,10 +33,6 @@ public class ReadyFood implements Food {
 		this.name = name;
 	}
 	
-	public void setIngredients(Map<Ingredient, Double> ingredients) {
-		this.ingredients = ingredients;
-	}
-	
 	public double getTotalWeight() {
 		double sum =0.0;
 		for (double d : ingredients.values()) {
