@@ -16,6 +16,7 @@ import ch.dao.FoodDAO;
 import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
 import ch.model.Ingredient;
+
 import javax.swing.ScrollPaneConstants;
 
 @SuppressWarnings("serial")
@@ -70,9 +71,16 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 		btnDelete = new JButton("Törlés");
 		btnDelete.setBounds(448, 113, 89, 40);
 		btnDelete.addActionListener(e -> {
-			if(selected != null) {
-				Ingredient toDelete = selected.getIngredient();
+			if (selected != null) {
+				try {
+					FoodDAO dao = new FoodXmlDAO();
+					dao.deleteIngredient(selected.getIngredient());
+					fillPanels(dao.getIngredients());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
+			
 		});
 		getContentPane().add(btnDelete);
 
@@ -91,17 +99,23 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 	private void loadIngredients() {
 		try {
 			FoodDAO dao = new FoodXmlDAO();
-			List<Ingredient> list = dao.getIngredients();
-			for (Ingredient ingredient : list) {
-				IngredientPanel ipan = new IngredientPanel(this, ingredient);
-				ipanels.add(ipan);
-				ipanelContainer.add(ipan);
-			}
-			this.repaint();
-			this.revalidate();
+			fillPanels(dao.getIngredients());
 		} catch (FoodDaoException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void fillPanels(List<Ingredient> ingredients) {
+		ipanelContainer.removeAll();
+		ipanels.clear();
+		
+		for (Ingredient ingredient : ingredients) {
+			IngredientPanel ipan = new IngredientPanel(this, ingredient);
+			ipanels.add(ipan);
+			ipanelContainer.add(ipan);
+		}
+		this.repaint();
+		this.revalidate();
 	}
 
 	@Override

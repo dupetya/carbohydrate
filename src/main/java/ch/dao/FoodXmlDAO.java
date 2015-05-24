@@ -102,11 +102,24 @@ public class FoodXmlDAO implements FoodDAO {
 			}
 		}
 	}
-	
+
 	@Override
 	public void deleteIngredient(Ingredient ig) throws FoodDaoException {
-		NodeList ingNL = doc.getElementsByTagName("Ingredient");
-		
+		boolean deleted = false;
+		Element ingsElement = (Element) doc.getElementsByTagName("Ingredients")
+				.item(0);
+		NodeList ingNL = ingsElement.getElementsByTagName("Ingredient");
+		for (int i = 0; i < ingNL.getLength(); i++) {
+			Element ingElem = (Element) ingNL.item(i);
+			if (ingElem.getAttribute("id").equals(ig.getId())) {
+				ingsElement.removeChild(ingElem);
+				deleted = true;
+				break;
+			}
+		}
+
+		if (deleted)
+			writeXML();
 	}
 
 	public void insertIngredient(Ingredient ig) throws FoodDaoException {
