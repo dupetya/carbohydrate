@@ -20,20 +20,20 @@ import ch.dao.FoodXmlDAO;
 import ch.model.ReadyFood;
 
 @SuppressWarnings("serial")
-public class rfViewFrame extends MyFrame implements ActionListener {
+public class RFViewFrame extends MyFrame implements ActionListener {
 
 	private List<FoodPanelRB> fPanels;
 	private JPanel fPanelContainer;
 	private JScrollPane scrollPane;
-	
+
 	private FoodPanelRB selected;
-	
+
 	private JButton btnNew;
 	private JButton btnModify;
 	private JButton btnDelete;
 	private JButton btnVissza;
-	
-	public rfViewFrame(JFrame parent) {
+
+	public RFViewFrame(JFrame parent) {
 		super(parent);
 		selected = null;
 		this.setBounds(100, 100, 553, 300);
@@ -58,6 +58,20 @@ public class rfViewFrame extends MyFrame implements ActionListener {
 
 		btnNew = new JButton("Új");
 		btnNew.setBounds(448, 11, 89, 40);
+		btnNew.addActionListener(e -> {
+			FoodDAO dao;
+			try {
+				dao = new FoodXmlDAO();
+				RFNewReadyFoodFrame newRFF = new RFNewReadyFoodFrame(this, dao
+						.getIngredients());
+				newRFF.setVisible(true);
+				this.setVisible(false);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		});
 		getContentPane().add(btnNew);
 
 		btnModify = new JButton("Módosítás");
@@ -75,11 +89,11 @@ public class rfViewFrame extends MyFrame implements ActionListener {
 			this.dispose();
 		});
 		getContentPane().add(btnVissza);
-		
+
 		loadReadyFoods();
 
 	}
-	
+
 	private void loadReadyFoods() {
 		try {
 			FoodDAO dao = new FoodXmlDAO();
@@ -119,7 +133,7 @@ public class rfViewFrame extends MyFrame implements ActionListener {
 				return;
 			}
 		}
-		
+
 	}
 
 }

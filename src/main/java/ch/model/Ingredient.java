@@ -106,6 +106,11 @@ public class Ingredient implements Food {
 					"Value can't be negative value!");
 		this.carbons = carbons;
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 
 	@Override
 	public int hashCode() {
