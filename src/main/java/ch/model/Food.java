@@ -1,6 +1,9 @@
 package ch.model;
 
 public interface Food {
+
+	public String getName();
+	
 	public double getCarbons();
 
 	public double getFat();

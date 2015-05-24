@@ -7,16 +7,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import ch.model.Ingredient;
+import ch.model.Food;
 
 @SuppressWarnings("serial")
-class IngPanel extends JPanel {
+class FoodPanelRB extends JPanel {
 
-	private Ingredient ingredient;
+	private Food food;
 	private JRadioButton rbutton;
 
-	public IngPanel(ActionListener parent, Ingredient ing) {
-		ingredient = ing;
+	public FoodPanelRB(ActionListener parent, Food ing) {
+		food = ing;
 		setLayout(null);
 		setPreferredSize(new Dimension(400, 35));
 
@@ -27,7 +27,7 @@ class IngPanel extends JPanel {
 		});
 		add(rbutton);
 		
-		JLabel lblNewLabel = new JLabel(ingredient.getName());
+		JLabel lblNewLabel = new JLabel(food.getName());
 		lblNewLabel.setBounds(50, 7, 340, 21);
 		add(lblNewLabel);
 	}
@@ -40,8 +40,8 @@ class IngPanel extends JPanel {
 		return rbutton.isSelected();
 	}
 	
-	public Ingredient getIngredient() {
-		return ingredient;
+	public Food getFood() {
+		return food;
 	}
 
 }

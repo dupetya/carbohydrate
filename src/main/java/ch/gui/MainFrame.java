@@ -44,6 +44,11 @@ public class MainFrame extends MyFrame {
 		
 		JButton buttonReadyFood = new JButton("Készételek");
 		buttonReadyFood.setBounds(48, 107, 169, 49);
+		buttonReadyFood.addActionListener(e -> {
+			rfViewFrame rfvf = new rfViewFrame(this);
+			rfvf.setVisible(true);
+			this.setVisible(false);
+		});
 		this.getContentPane().add(buttonReadyFood);
 		
 		JButton btnMenus = new JButton("Menük");

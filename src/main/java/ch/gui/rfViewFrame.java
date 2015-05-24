@@ -17,27 +17,28 @@ import javax.swing.ScrollPaneConstants;
 import ch.dao.FoodDAO;
 import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
-import ch.model.Ingredient;
+import ch.model.ReadyFood;
 
 @SuppressWarnings("serial")
-public class IngViewFrame extends MyFrame implements ActionListener {
+public class rfViewFrame extends MyFrame implements ActionListener {
+
+	private List<FoodPanelRB> fPanels;
+	private JPanel fPanelContainer;
 	private JScrollPane scrollPane;
-	private JPanel ipanelContainer;
-	private List<FoodPanelRB> ipanels;
-
+	
 	private FoodPanelRB selected;
-
+	
 	private JButton btnNew;
 	private JButton btnModify;
 	private JButton btnDelete;
 	private JButton btnVissza;
-
-	public IngViewFrame(JFrame parent) {
+	
+	public rfViewFrame(JFrame parent) {
 		super(parent);
 		selected = null;
 		this.setBounds(100, 100, 553, 300);
-		ipanels = new ArrayList<FoodPanelRB>();
-		setTitle("Hozzávalók");
+		fPanels = new ArrayList<FoodPanelRB>();
+		setTitle("Készételek");
 		setResizable(false);
 		getContentPane().setLayout(null);
 
@@ -51,45 +52,20 @@ public class IngViewFrame extends MyFrame implements ActionListener {
 		tempPanel.setLayout(new BorderLayout(0, 0));
 		scrollPane.setViewportView(tempPanel);
 
-		ipanelContainer = new JPanel();
-		tempPanel.add(ipanelContainer, BorderLayout.NORTH);
-		ipanelContainer.setLayout(new GridLayout(0, 1, 0, 1));
+		fPanelContainer = new JPanel();
+		tempPanel.add(fPanelContainer, BorderLayout.NORTH);
+		fPanelContainer.setLayout(new GridLayout(0, 1, 0, 1));
 
 		btnNew = new JButton("Új");
 		btnNew.setBounds(448, 11, 89, 40);
-		btnNew.addActionListener(e -> {
-			IngNewIngredientFrame nif = new IngNewIngredientFrame(this);
-			this.setVisible(false);
-			nif.setVisible(true);
-		});
 		getContentPane().add(btnNew);
 
 		btnModify = new JButton("Módosítás");
-		btnModify.addActionListener(e -> {
-			if (selected != null) {
-				IngModifyFrame miFrame = new IngModifyFrame(this,
-						(Ingredient) selected.getFood());
-				miFrame.setVisible(true);
-				this.setVisible(false);
-			}
-		});
 		btnModify.setBounds(448, 62, 89, 40);
 		getContentPane().add(btnModify);
 
 		btnDelete = new JButton("Törlés");
 		btnDelete.setBounds(448, 113, 89, 40);
-		btnDelete.addActionListener(e -> {
-			if (selected != null) {
-				try {
-					FoodDAO dao = new FoodXmlDAO();
-					dao.deleteIngredient((Ingredient) selected.getFood());
-					fillPanels(dao.getIngredients());
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-
-		});
 		getContentPane().add(btnDelete);
 
 		btnVissza = new JButton("Vissza");
@@ -99,32 +75,32 @@ public class IngViewFrame extends MyFrame implements ActionListener {
 			this.dispose();
 		});
 		getContentPane().add(btnVissza);
-
-		loadIngredients();
+		
+		loadReadyFoods();
 
 	}
-
-	private void loadIngredients() {
+	
+	private void loadReadyFoods() {
 		try {
 			FoodDAO dao = new FoodXmlDAO();
-			fillPanels(dao.getIngredients());
+			fillPanels(dao.getReadyFoods());
 		} catch (FoodDaoException e) {
 			e.printStackTrace();
 		}
 	}
 
-	void fillPanels(List<Ingredient> ingredients) {
-		ipanelContainer.removeAll();
-		ipanels.clear();
+	void fillPanels(List<ReadyFood> rfoods) {
+		fPanelContainer.removeAll();
+		fPanels.clear();
 
-		Collections.sort(ingredients, (o1, o2) -> {
+		Collections.sort(rfoods, (o1, o2) -> {
 			return o1.getName().compareTo(o2.getName());
 		});
 
-		for (Ingredient ingredient : ingredients) {
-			FoodPanelRB ipan = new FoodPanelRB(this, ingredient);
-			ipanels.add(ipan);
-			ipanelContainer.add(ipan);
+		for (ReadyFood rf : rfoods) {
+			FoodPanelRB ipan = new FoodPanelRB(this, rf);
+			fPanels.add(ipan);
+			fPanelContainer.add(ipan);
 		}
 		this.repaint();
 		this.revalidate();
@@ -136,13 +112,14 @@ public class IngViewFrame extends MyFrame implements ActionListener {
 			selected.getRButton().setSelected(false);
 			selected = null;
 		}
-		for (FoodPanelRB ingredientPanel : ipanels) {
-			if (e.getSource() == ingredientPanel.getRButton()) {
-				selected = ingredientPanel;
+		for (FoodPanelRB fPanel : fPanels) {
+			if (e.getSource() == fPanel.getRButton()) {
+				selected = fPanel;
 				selected.getRButton().setSelected(true);
 				return;
 			}
 		}
-
+		
 	}
+
 }
