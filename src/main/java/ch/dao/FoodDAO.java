@@ -14,6 +14,7 @@ public interface FoodDAO {
 	Ingredient getIngredientByID(String id) throws FoodDaoException;
 	void updateIngredient(Ingredient ig) throws FoodDaoException;
 	void insertIngredient(Ingredient ig) throws FoodDaoException;
+	void deleteIngredient(Ingredient ig) throws FoodDaoException;
 	
 	Ingredient getReadyFoodByID(String id) throws FoodDaoException;
 	void updateReadyFood(ReadyFood rf) throws FoodDaoException;

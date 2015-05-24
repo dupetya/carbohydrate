@@ -16,6 +16,7 @@ import ch.dao.FoodDAO;
 import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
 import ch.model.Ingredient;
+import javax.swing.ScrollPaneConstants;
 
 @SuppressWarnings("serial")
 public class IngredientFrame extends MyFrame implements ActionListener {
@@ -23,12 +24,16 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 	private JPanel ipanelContainer;
 	private List<IngredientPanel> ipanels;
 
+	private IngredientPanel selected;
+
 	private JButton btnNew;
 	private JButton btnModify;
 	private JButton btnDelete;
+	private JButton btnVissza;
 
 	public IngredientFrame(JFrame parent) {
 		super(parent);
+		selected = null;
 		this.setBounds(100, 100, 553, 300);
 		ipanels = new ArrayList<IngredientPanel>();
 		setTitle("Hozzávalók");
@@ -36,7 +41,9 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 		getContentPane().setLayout(null);
 
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 259, 424, -246);
+		scrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(14, 11, 424, 246);
 		getContentPane().add(scrollPane);
 
 		JPanel tempPanel = new JPanel();
@@ -62,9 +69,23 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 
 		btnDelete = new JButton("Törlés");
 		btnDelete.setBounds(448, 113, 89, 40);
+		btnDelete.addActionListener(e -> {
+			if(selected != null) {
+				Ingredient toDelete = selected.getIngredient();
+			}
+		});
 		getContentPane().add(btnDelete);
 
+		btnVissza = new JButton("Vissza");
+		btnVissza.setBounds(448, 196, 89, 61);
+		btnVissza.addActionListener(e -> {
+			this.parentFrame.setVisible(true);
+			this.dispose();
+		});
+		getContentPane().add(btnVissza);
+
 		loadIngredients();
+
 	}
 
 	private void loadIngredients() {
@@ -72,12 +93,12 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 			FoodDAO dao = new FoodXmlDAO();
 			List<Ingredient> list = dao.getIngredients();
 			for (Ingredient ingredient : list) {
-				IngredientPanel ipan = new IngredientPanel(ingredient);
+				IngredientPanel ipan = new IngredientPanel(this, ingredient);
 				ipanels.add(ipan);
 				ipanelContainer.add(ipan);
-				repaint();
 			}
-			revalidate();
+			this.repaint();
+			this.revalidate();
 		} catch (FoodDaoException e) {
 			e.printStackTrace();
 		}
@@ -85,9 +106,16 @@ public class IngredientFrame extends MyFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		if (selected != null) {
+			selected.getRButton().setSelected(false);
+			selected = null;
+		}
 		for (IngredientPanel ingredientPanel : ipanels) {
-
+			if (e.getSource() == ingredientPanel.getRButton()) {
+				selected = ingredientPanel;
+				selected.getRButton().setSelected(true);
+				return;
+			}
 		}
 
 	}

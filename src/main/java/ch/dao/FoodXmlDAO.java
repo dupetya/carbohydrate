@@ -101,7 +101,12 @@ public class FoodXmlDAO implements FoodDAO {
 
 			}
 		}
-
+	}
+	
+	@Override
+	public void deleteIngredient(Ingredient ig) throws FoodDaoException {
+		NodeList ingNL = doc.getElementsByTagName("Ingredient");
+		
 	}
 
 	public void insertIngredient(Ingredient ig) throws FoodDaoException {
