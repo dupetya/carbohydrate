@@ -18,6 +18,7 @@ import ch.dao.FoodDAO;
 import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
 import ch.model.ReadyFood;
+import java.awt.Font;
 
 @SuppressWarnings("serial")
 public class RFViewFrame extends MyFrame implements ActionListener {
@@ -32,6 +33,7 @@ public class RFViewFrame extends MyFrame implements ActionListener {
 	private JButton btnModify;
 	private JButton btnDelete;
 	private JButton btnVissza;
+	private JButton btnDetails;
 
 	public RFViewFrame(JFrame parent) {
 		super(parent);
@@ -75,6 +77,7 @@ public class RFViewFrame extends MyFrame implements ActionListener {
 		getContentPane().add(btnNew);
 
 		btnModify = new JButton("Módosítás");
+		btnModify.setFont(new Font("Dialog", Font.BOLD, 8));
 		btnModify.setBounds(448, 62, 89, 40);
 		btnModify.addActionListener(e->{
 			if(selected != null) {
@@ -101,12 +104,24 @@ public class RFViewFrame extends MyFrame implements ActionListener {
 		getContentPane().add(btnDelete);
 
 		btnVissza = new JButton("Vissza");
-		btnVissza.setBounds(448, 196, 89, 61);
+		btnVissza.setBounds(448, 211, 89, 46);
 		btnVissza.addActionListener(e -> {
 			this.parentFrame.setVisible(true);
 			this.dispose();
 		});
 		getContentPane().add(btnVissza);
+		
+		btnDetails = new JButton("Részletek");
+		btnDetails.setFont(new Font("Dialog", Font.BOLD, 8));
+		btnDetails.setBounds(450, 165, 87, 34);
+		btnDetails.addActionListener(e->{
+			if(selected != null) {
+				RFDetailsFrame rfd = new RFDetailsFrame(this,(ReadyFood) selected.getFood());
+				rfd.setVisible(true);
+				this.setVisible(false);
+			}
+		});
+		getContentPane().add(btnDetails);
 
 		loadReadyFoods();
 

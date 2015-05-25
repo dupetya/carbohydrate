@@ -51,8 +51,11 @@ public class MainFrame extends MyFrame {
 		});
 		this.getContentPane().add(buttonReadyFood);
 		
-		JButton btnMenus = new JButton("Menük");
-		btnMenus.setBounds(48, 185, 169, 49);
-		this.getContentPane().add(btnMenus);
+		JButton btnExit = new JButton("Kilépés");
+		btnExit.setBounds(48, 185, 169, 49);
+		btnExit.addActionListener(e -> {
+			this.dispose();
+		});
+		this.getContentPane().add(btnExit);
 	}
 }
