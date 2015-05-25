@@ -53,7 +53,7 @@ public class IngModifyFrame extends MyFrame {
 		nameTF.setBounds(138, 11, 141, 20);
 		getContentPane().add(nameTF);
 
-		caloriesTF = new NumberOnlyTextField(transfer.getCarbons());
+		caloriesTF = new NumberOnlyTextField(transfer.getCalories());
 		caloriesTF.setBounds(138, 37, 141, 20);
 		getContentPane().add(caloriesTF);
 
