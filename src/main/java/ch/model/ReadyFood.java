@@ -13,6 +13,7 @@ public class ReadyFood implements Food {
 
 	public ReadyFood(String id) {
 		this.id = id;
+		this.name = "";
 		ingredients = new HashMap<Ingredient, Double>();
 	}
 
@@ -60,21 +61,24 @@ public class ReadyFood implements Food {
 
 	public double getIngredientWeight(Ingredient ing) {
 		if (ingredients.get(ing) == null)
-			throw new FoodException("No such ingredient");
+			return 0;
 		else
 			return ingredients.get(ing);
 	}
 
 	public boolean addIngredient(Ingredient ing, double weight) {
+		if (weight <= 0.0) {
+			throw new FoodException("Invalid weight");
+		}
 		if (ingredients.get(ing) == null) {
 			ingredients.put(ing, weight);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public boolean removeIngredient(Ingredient ing) {
-		if(ingredients.get(ing) != null){
+		if (ingredients.get(ing) != null) {
 			ingredients.remove(ing);
 			return true;
 		}
@@ -111,10 +115,7 @@ public class ReadyFood implements Food {
 		}
 
 		double w = getTotalWeight();
-		if (w != 0)
-			return (sum / w) * weight;
-		else
-			return 0;
+		return (sum / w) * weight;
 	}
 
 	@Override
@@ -127,10 +128,7 @@ public class ReadyFood implements Food {
 		}
 
 		double w = getTotalWeight();
-		if (w != 0)
-			return (sum / w) * weight;
-		else
-			return 0;
+		return (sum / w) * weight;
 	}
 
 	@Override
@@ -143,10 +141,7 @@ public class ReadyFood implements Food {
 		}
 
 		double w = getTotalWeight();
-		if (w != 0)
-			return (sum / w) * weight;
-		else
-			return 0;
+		return (sum / w) * weight;
 	}
 
 	@Override
@@ -159,10 +154,7 @@ public class ReadyFood implements Food {
 		}
 
 		double w = getTotalWeight();
-		if (w != 0)
-			return (sum / w) * weight;
-		else
-			return 0;
+		return (sum / w) * weight;
 	}
 
 	@Override
