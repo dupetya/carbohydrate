@@ -16,9 +16,10 @@ public class ReadyFood implements Food {
 		ingredients = new HashMap<Ingredient, Double>();
 	}
 
-	public ReadyFood(String id, String name) {
+	public ReadyFood(String id, String name, Map<Ingredient, Double> map) {
 		this(id);
 		this.name = name;
+		this.ingredients = map;
 	}
 
 	public String getId() {
@@ -67,6 +68,14 @@ public class ReadyFood implements Food {
 	public boolean addIngredient(Ingredient ing, double weight) {
 		if (ingredients.get(ing) == null) {
 			ingredients.put(ing, weight);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean removeIngredient(Ingredient ing) {
+		if(ingredients.get(ing) != null){
+			ingredients.remove(ing);
 			return true;
 		}
 		return false;

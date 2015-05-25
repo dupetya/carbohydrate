@@ -21,7 +21,7 @@ public class IngredientTest {
 	}
 	
 	@Test
-	public void testGetters1() {
+	public void testGettersWithNoParamaters() {
 		assertEquals("ig01", i1.getId());
 		assertEquals(4.0, i1.getCalories(), 0.0001);
 		assertEquals(2.5, i1.getFat(), 0.0001);
@@ -30,7 +30,7 @@ public class IngredientTest {
 	}
 
 	@Test
-	public void testGetters2() {
+	public void testGettersWithParameter() {
 		assertEquals(4.0, i1.getCalories(100.0), 0.0001);
 		assertEquals(1.25, i1.getFat(50.0), 0.0001);
 		assertEquals(0.55, i1.getCarbons(10.0), 0.0001);
