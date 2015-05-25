@@ -325,7 +325,7 @@ public class FoodXmlDAO implements FoodDAO {
 
 		NodeList mapPairNodeList = rfElement.getElementsByTagName("Pair");
 		for (int j = 0; j < mapPairNodeList.getLength(); j++) {
-			Element pairElement = (Element) mapPairNodeList.item(0);
+			Element pairElement = (Element) mapPairNodeList.item(j);
 
 			Element keyElem = (Element) pairElement.getElementsByTagName("id")
 					.item(0);
