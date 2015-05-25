@@ -10,12 +10,12 @@ public class ReadyFood implements Food {
 	private String id;
 	private String name;
 	private Map<Ingredient, Double> ingredients;
-	
+
 	public ReadyFood(String id) {
 		this.id = id;
 		ingredients = new HashMap<Ingredient, Double>();
 	}
-	
+
 	public ReadyFood(String id, String name) {
 		this(id);
 		this.name = name;
@@ -24,23 +24,31 @@ public class ReadyFood implements Food {
 	public String getId() {
 		return id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public double getTotalWeight() {
-		double sum =0.0;
+		double sum = 0.0;
 		for (double d : ingredients.values()) {
 			sum += d;
 		}
 		return sum;
 	}
-	
+
+	public Map<Ingredient, Double> getIngredientsTable() {
+		Map<Ingredient, Double> mRes = new HashMap<Ingredient, Double>();
+		for (Ingredient ing : getIngredients()) {
+			mRes.put(ing, getIngredientWeight(ing));
+		}
+		return mRes;
+	}
+
 	public List<Ingredient> getIngredients() {
 		List<Ingredient> l = new ArrayList<Ingredient>();
 		for (Ingredient ingredient : ingredients.keySet()) {
@@ -48,22 +56,22 @@ public class ReadyFood implements Food {
 		}
 		return l;
 	}
-	
+
 	public double getIngredientWeight(Ingredient ing) {
-		if(ingredients.get(ing) == null)
+		if (ingredients.get(ing) == null)
 			throw new FoodException("No such ingredient");
-		else return ingredients.get(ing);
+		else
+			return ingredients.get(ing);
 	}
-	
+
 	public boolean addIngredient(Ingredient ing, double weight) {
-		if(ingredients.get(ing) == null) {
+		if (ingredients.get(ing) == null) {
 			ingredients.put(ing, weight);
 			return true;
 		}
 		return false;
 	}
-	
-	
+
 	@Override
 	public double getCarbons() {
 		return getCarbons(100.0);
@@ -86,73 +94,77 @@ public class ReadyFood implements Food {
 
 	@Override
 	public double getCarbons(double weight) {
-		if(weight < 0.0)
+		if (weight < 0.0)
 			throw new FoodException("Weight can't be negative");
 		double sum = 0.0;
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getCarbons((ingredients.get(ing)));
 		}
-		
+
 		double w = getTotalWeight();
-		if(w != 0)
+		if (w != 0)
 			return (sum / w) * weight;
-		else return 0;
+		else
+			return 0;
 	}
 
 	@Override
 	public double getFat(double weight) {
-		if(weight < 0.0)
+		if (weight < 0.0)
 			throw new FoodException("Weight can't be negative");
 		double sum = 0.0;
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getFat((ingredients.get(ing)));
 		}
-		
+
 		double w = getTotalWeight();
-		if(w != 0)
+		if (w != 0)
 			return (sum / w) * weight;
-		else return 0;
+		else
+			return 0;
 	}
 
 	@Override
 	public double getCalories(double weight) {
-		if(weight < 0.0)
+		if (weight < 0.0)
 			throw new FoodException("Weight can't be negative");
 		double sum = 0.0;
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getCalories((ingredients.get(ing)));
 		}
-		
+
 		double w = getTotalWeight();
-		if(w != 0)
+		if (w != 0)
 			return (sum / w) * weight;
-		else return 0;
+		else
+			return 0;
 	}
 
 	@Override
 	public double getProteins(double weight) {
-		if(weight < 0.0)
+		if (weight < 0.0)
 			throw new FoodException("Weight can't be negative");
 		double sum = 0.0;
 		for (Ingredient ing : ingredients.keySet()) {
 			sum += ing.getProteins((ingredients.get(ing)));
 		}
-		
+
 		double w = getTotalWeight();
-		if(w != 0)
+		if (w != 0)
 			return (sum / w) * weight;
-		else return 0;
+		else
+			return 0;
 	}
-		
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof ReadyFood) {
+		if (obj instanceof ReadyFood) {
 			ReadyFood o = (ReadyFood) obj;
 			return this.id.equals(o.id);
 		}
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();
