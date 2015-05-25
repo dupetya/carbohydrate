@@ -30,10 +30,10 @@ public class FoodXmlDAO implements FoodDAO {
 	private File ingredientFile;
 	private File rfFile;
 	
-
 	public FoodXmlDAO() throws FoodDaoException {
 		ingredientFile = new File(new File(System.getProperty("user.home"),
 				"CarboHydrate"), "ingredients.xml");
+		rfFile = new File(ingredientFile.getParentFile(), "readyfoods.xml");
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		try {
@@ -43,9 +43,14 @@ public class FoodXmlDAO implements FoodDAO {
 			} else {
 				ingredientFile.getParentFile().mkdirs();
 				ingredientDoc = builder.newDocument();
-				Node root = ingredientDoc.appendChild(ingredientDoc.createElement("Foods"));
-				root.appendChild(ingredientDoc.createElement("Ingredients"));
-				root.appendChild(ingredientDoc.createElement("ReadyFoods"));
+				ingredientDoc.appendChild(ingredientDoc.createElement("Ingredients"));
+			}
+			
+			if(rfFile.exists()) {
+				rfDoc = builder.parse(rfFile);
+			} else {
+				rfDoc = builder.newDocument();
+				rfDoc.appendChild(rfDoc.createElement("ReadyFoods"));
 			}
 		} catch (ParserConfigurationException | IOException | SAXException e) {
 			throw new FoodDaoException("Error in data access", e);
@@ -100,7 +105,7 @@ public class FoodXmlDAO implements FoodDAO {
 				ingredientElement.getElementsByTagName("calories").item(0)
 						.setTextContent(String.valueOf((ig.getCalories())));
 
-				writeXML();
+				writeIngredientXML();
 
 			}
 		}
@@ -128,7 +133,7 @@ public class FoodXmlDAO implements FoodDAO {
 		}
 
 		if (deleted)
-			writeXML();
+			writeIngredientXML();
 	}
 
 	public void insertIngredient(Ingredient ig) throws FoodDaoException {
@@ -145,7 +150,7 @@ public class FoodXmlDAO implements FoodDAO {
 		Element ingElement = ingredientToElement(ig);
 		ingredientsNode.appendChild(ingElement);
 
-		writeXML();
+		writeIngredientXML();
 
 	}
 
@@ -153,7 +158,7 @@ public class FoodXmlDAO implements FoodDAO {
 	public List<ReadyFood> getReadyFoods() {
 		List<ReadyFood> result = new ArrayList<ReadyFood>();
 
-		NodeList readyFoodNodeList = ingredientDoc.getElementsByTagName("ReadyFood");
+		NodeList readyFoodNodeList = rfDoc.getElementsByTagName("ReadyFood");
 		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
 			Element rfElement = (Element) readyFoodNodeList.item(i);
 			ReadyFood rf = elementToReadyFood(rfElement);
@@ -165,7 +170,7 @@ public class FoodXmlDAO implements FoodDAO {
 
 	@Override
 	public ReadyFood getReadyFoodByID(String id) throws FoodDaoException {
-		NodeList readyFoodNodeList = ingredientDoc.getElementsByTagName("ReadyFood");
+		NodeList readyFoodNodeList = rfDoc.getElementsByTagName("ReadyFood");
 		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
 			Element rfElement = (Element) readyFoodNodeList.item(i);
 			if (rfElement.getAttribute("id").equals(id)) {
@@ -177,7 +182,7 @@ public class FoodXmlDAO implements FoodDAO {
 
 	@Override
 	public void updateReadyFood(ReadyFood rf) throws FoodDaoException {
-		Element rfsElement = (Element) ingredientDoc.getElementsByTagName("ReadyFoods")
+		Element rfsElement = (Element) rfDoc.getElementsByTagName("ReadyFoods")
 				.item(0);
 		NodeList readyFoodNodeList = rfsElement
 				.getElementsByTagName("ReadyFood");
@@ -199,13 +204,13 @@ public class FoodXmlDAO implements FoodDAO {
 			}
 		}
 		if(updated)
-			writeXML();
+			writeRFXml();
 	}
 
 	@Override
 	public void insertReadyFood(ReadyFood rf) throws FoodDaoException {
 
-		Element rfsElement = (Element) ingredientDoc.getElementsByTagName("ReadyFoods")
+		Element rfsElement = (Element) rfDoc.getElementsByTagName("ReadyFoods")
 				.item(0);
 		NodeList rfNodeList = rfsElement.getElementsByTagName("ReadyFood");
 
@@ -224,13 +229,13 @@ public class FoodXmlDAO implements FoodDAO {
 			return;
 		rfsElement.appendChild(rfElement);
 
-		writeXML();
+		writeRFXml();
 
 	}
 	
 	@Override
 	public void deleteReadyFood(ReadyFood rf) throws FoodDaoException {
-		Element rfsElement = (Element) ingredientDoc.getElementsByTagName("ReadyFoods")
+		Element rfsElement = (Element) rfDoc.getElementsByTagName("ReadyFoods")
 				.item(0);
 		NodeList rfNodeList = rfsElement.getElementsByTagName("ReadyFood");
 		boolean deleted = false;
@@ -250,29 +255,29 @@ public class FoodXmlDAO implements FoodDAO {
 			}
 		}
 		if(deleted){
-			writeXML();
+			writeRFXml();
 		}
 
 	}
 
 	private Element readyfoodToElement(ReadyFood rf) {
-		Element rfElement = ingredientDoc.createElement("ReadyFood");
+		Element rfElement = rfDoc.createElement("ReadyFood");
 		rfElement.setAttribute("id", rf.getId());
-		rfElement.appendChild(ingredientDoc.createElement("name")).appendChild(
-				ingredientDoc.createTextNode(rf.getName()));
+		rfElement.appendChild(rfDoc.createElement("name")).appendChild(
+				rfDoc.createTextNode(rf.getName()));
 
-		Node mapNode = rfElement.appendChild(ingredientDoc.createElement("Map"));
+		Node mapNode = rfElement.appendChild(rfDoc.createElement("Map"));
 		for (Ingredient ing : rf.getIngredients()) {
 
 			if (getIngredientByID(ing.getId()) == null)
 				return null;
 
-			Node pairNode = mapNode.appendChild(ingredientDoc.createElement("Pair"));
+			Node pairNode = mapNode.appendChild(rfDoc.createElement("Pair"));
 
-			pairNode.appendChild(ingredientDoc.createElement("id")).appendChild(
-					ingredientDoc.createTextNode(ing.getId()));
-			pairNode.appendChild(ingredientDoc.createElement("value")).appendChild(
-					ingredientDoc.createTextNode(String.valueOf(rf
+			pairNode.appendChild(rfDoc.createElement("id")).appendChild(
+					rfDoc.createTextNode(ing.getId()));
+			pairNode.appendChild(rfDoc.createElement("value")).appendChild(
+					rfDoc.createTextNode(String.valueOf(rf
 							.getIngredientWeight(ing))));
 		}
 		return rfElement;
@@ -336,8 +341,23 @@ public class FoodXmlDAO implements FoodDAO {
 		}
 		return rf;
 	}
+	
+	private void writeRFXml() throws FoodDaoException {
+		try {
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer trans = tf.newTransformer();
+			trans.setOutputProperty(OutputKeys.INDENT, "yes");
+			trans.setOutputProperty(
+					"{http://xml.apache.org/xslt}indent-amount", "2");
+			DOMSource source = new DOMSource(rfDoc);
+			StreamResult res = new StreamResult(rfFile);
+			trans.transform(source, res);
+		} catch (TransformerException e) {
+			throw new FoodDaoException("Error while writing XML", e);
+		}
+	}
 
-	private void writeXML() throws FoodDaoException {
+	private void writeIngredientXML() throws FoodDaoException {
 		try {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer trans = tf.newTransformer();
