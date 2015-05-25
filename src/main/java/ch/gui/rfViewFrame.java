@@ -76,9 +76,27 @@ public class RFViewFrame extends MyFrame implements ActionListener {
 
 		btnModify = new JButton("Módosítás");
 		btnModify.setBounds(448, 62, 89, 40);
+		btnModify.addActionListener(e->{
+			if(selected != null) {
+			RFModifyRFFrame fram = new RFModifyRFFrame(this, (ReadyFood) selected.getFood());
+			this.setVisible(false);
+			fram.setVisible(true);
+			}
+		});
 		getContentPane().add(btnModify);
 
 		btnDelete = new JButton("Törlés");
+		btnDelete.addActionListener(e -> {
+			if(selected != null) {
+				try {
+					FoodDAO dao = new FoodXmlDAO();
+					dao.deleteReadyFood((ReadyFood) selected.getFood());
+					fillPanels(dao.getReadyFoods());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnDelete.setBounds(448, 113, 89, 40);
 		getContentPane().add(btnDelete);
 

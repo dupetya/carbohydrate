@@ -172,16 +172,19 @@ public class FoodXmlDAO implements FoodDAO {
 				.item(0);
 		NodeList readyFoodNodeList = rfsElement
 				.getElementsByTagName("ReadyFood");
-
+		boolean updated = false;
 		for (int i = 0; i < readyFoodNodeList.getLength(); i++) {
 			Element rfElement = (Element) readyFoodNodeList.item(i);
 			if (rfElement.getAttribute("id").equals(rf.getId())) {
 				Element newElem = readyfoodToElement(rf);
 				rfsElement.removeChild(rfElement);
 				rfsElement.appendChild(newElem);
+				updated = true;
 				break;
 			}
 		}
+		if(updated)
+			writeXML();
 	}
 
 	@Override
@@ -215,14 +218,18 @@ public class FoodXmlDAO implements FoodDAO {
 		Element rfsElement = (Element) doc.getElementsByTagName("ReadyFoods")
 				.item(0);
 		NodeList rfNodeList = rfsElement.getElementsByTagName("ReadyFood");
-
+		boolean deleted = false;
 		if (rfNodeList.getLength() > 0) {
 			for (int i = 0; i < rfNodeList.getLength(); i++) {
 				Element rfElem = (Element) rfNodeList.item(i);
 				if (rfElem.getAttribute("id").equals(rf.getId())) {
+					deleted = true;
 					rfsElement.removeChild(rfElem);
 				}
 			}
+		}
+		if(deleted){
+			writeXML();
 		}
 
 	}
