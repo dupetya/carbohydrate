@@ -19,6 +19,7 @@ import ch.dao.FoodDaoException;
 import ch.dao.FoodXmlDAO;
 import ch.model.Ingredient;
 
+
 @SuppressWarnings("serial")
 public class IngViewFrame extends MyFrame implements ActionListener {
 	private JScrollPane scrollPane;
@@ -99,6 +100,38 @@ public class IngViewFrame extends MyFrame implements ActionListener {
 			this.dispose();
 		});
 		getContentPane().add(btnVissza);
+		
+		JButton btnImport = new JButton("Import");
+		btnImport.setBounds(448, 164, 89, 23);
+		btnImport.addActionListener(e -> {
+			try {
+				FoodDAO dao = new FoodXmlDAO();
+				List<Ingredient> present = new ArrayList<Ingredient>();
+				for (FoodPanelRB foodPanelRB : ipanels) {
+					present.add((Ingredient)foodPanelRB.getFood());
+				}
+				
+				List<Ingredient> all = dao.getIngredients();
+				
+				for (Ingredient ing : present) {
+					all.remove(ing);
+				}
+				
+
+				for (Ingredient ing : all) {
+					FoodPanelRB ipan = new FoodPanelRB(this, ing);
+					ipanels.add(ipan);
+					ipanelContainer.add(ipan);
+				}
+				this.repaint();
+				this.revalidate();
+				
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		getContentPane().add(btnImport);
 
 		loadIngredients();
 
